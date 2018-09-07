@@ -5,7 +5,8 @@
     var NgEditor = function(ele, opt) {
         this.$element = ele,
         this.defaults = {
-            'debug': true
+            'debug': true,
+            'page_api':'',
         },
         this.options = $.extend({}, this.defaults, opt);
 
@@ -22,13 +23,15 @@
                     });
                     $(a_obj).addClass('ng_btn_active');
                     var rel = $(a_obj).attr('rel');
-                    console.log('#'+rel);
                     $('#'+rel).css({'display':'block'});
                 });
             });
             $('a.ng_tag').get(index).click();
+        };
+        this._load = function(url,method,data) {
+            
         }
-}
+    }
     NgEditor.prototype = {
         init : function() {
             if (this.options.debug) {
