@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ng editor</title>
+    <link href="./ng_editor_default.css" rel="stylesheet">
+
+</head>
+<body>
+<div id="pl_header">
+
+</div>
+<div id="pl_container">
+    <div id="pl_left">
+        <div id="pl_left_top">
+            <ul class="pl_bar">
+                <li><a href="#" onclick="javascript:void(0);" rel="ng_page" class="ng_tag">页面管理</a></li>
+                <li><a href="#" onclick="javascript:void(0);" rel="ng_componer" class="ng_tag">组件管理</a></li>
+                <li><a href="#" onclick="javascript:void(0);" rel="ng_material" class="ng_tag">素材管理</a></li>
+            </ul>
+            <div class="ng_tag_ctl" id="ng_page" style="display: block;">
+                <div class="ng_page_item"></div>
+                <div class="ng_page_item"></div>
+                <div class="ng_page_item"></div>
+                <div class="ng_page_item"></div>
+
+            </div>
+            <div class="ng_tag_ctl" id="ng_componer" style="display: none;">
+                <div class="ng_componer_item"></div>
+            </div>
+            <div class="ng_tag_ctl" id="ng_material" style="display: none;">
+                <div class="ng_material_item"></div>
+            </div>
+
+        </div>
+        <div id="pl_left_container"></div>
+    </div>
+    <div id="pl_mid">
+        <div id="pl_mid_top">
+            <ul class="pl_bar">
+                <li><a href="#" onclick="javascript:void(0);" class="page_redo">撤销</a></li>
+                <li><a href="#" onclick="javascript:void(0);" class="page_save">保存</a></li>
+            </ul>
+        </div>
+        <div id="pl_mid_container"></div>
+    </div>
+    <div id="pl_right">
+        <div id="pl_right_top">
+            <ul class="pl_bar">
+                <li><a href="#" onclick="javascript:void(0);" class="page_nothing">属性</a></li>
+            </ul>
+        </div>
+        <div id="pl_right_container"></div>
+    </div>
+</div>
+
+<div id="pl_footer">
+
+</div>
+<script type="text/javascript">
+    var GV = {
+        HOST:"/wxapp/",
+        ROOT: "/",
+        WEB_ROOT: "/",
+        JS_ROOT: "./wxapp/asset/js/"
+    };
+</script>
+<script src="/wxapp/asset/js/jquery.js"></script>
+<script src="/wxapp/asset/js/wind.js"></script>
+<script src="./ng_editor.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $('body').ng_editor();
+    });
+</script>
+</body>
+</html>
