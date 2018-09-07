@@ -55,7 +55,7 @@ body {
 #pl_container .fl {float: left;}
 
 #pl_container #pl_left #pl_left_top {height: 24px;width: 100%;padding: 5px 0px;background: #0F3A56;border-bottom: 1px solid #fff;}
-#pl_container ul{list-style-type: none;margin: 0px;padding: 0px;}
+#pl_container ul{list-style-type: none;margin: 0px;padding: 0px;overflow: hidden;}
 
 #pl_left_top .pl_bar li{float: left;width: 32.5%;font-size: 16px;text-align: center;border-left: 1px solid #ccc;}
 #pl_left_top .pl_bar li:first-child{margin-left: 4px;border-left: 0px;}
@@ -98,3 +98,9 @@ body {
 .pl_miniapp_top_op_sep{margin-left:4px;margin-top: 5px;width: 23px;height: 24px;background: url("images/sep_line_white.png") no-repeat;}
 .pl_miniapp_top_op_cirle{margin-left:4px;margin-top: 5px;width: 24px;height: 24px;background: url("images/circle_white.png") no-repeat;}
 .ma_footer{width:100%;height: 50px;}
+
+/*页面部分*/
+.ng_tag_ctl{clear: both;}
+.ng_page_item{width: 142px;height: 234px;margin-left: 4px;margin-right:2px;margin-top: 10px;  float: left; border: 1px solid #fff;}
+.ng_page_item .ng_page_snapshot{height: 204px;whith:100%;background: #fff;border-bottom: 1px solid #ccc;}
+.ng_page_item .ng_page_item_title {height: 24px;line-height: 24px;text-align: center;color: #fff;font-size: 14px; }
