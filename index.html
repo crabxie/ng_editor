@@ -8,7 +8,13 @@
 </head>
 <body>
 <div id="pl_header">
-
+<div id="pl_login_account">
+    <img class="pl_login_avatar" src="#" onerror="this.onerror='';src='/wxapp/asset/simpleboot/images/avatar/default.jpg'">
+    <div class="pl_login_info">
+        <div class="pl_login_name">#</div>
+        <div class="pl_login_group">##</div>
+    </div>
+</div>
 </div>
 <div id="pl_container">
     <div id="pl_left">
@@ -86,7 +92,12 @@
 <script src="./ng_editor.js"></script>
 <script type="text/javascript">
     $(function(){
-        $('body').ng_editor();
+        $('body').ng_editor({
+            'company_id' : '123456',
+            'user_id' : '1',
+            'account_api': './mock/api.php?m=user&c=account',
+
+        });
     });
 </script>
 </body>
