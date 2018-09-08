@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>ng editor</title>
+    <link href="/wxapp/asset/simpleboot/themes/flat/theme.min.css" rel="stylesheet">
+    <link href="/wxapp/asset/js/artDialog/skins/default.css" rel="stylesheet" />
     <link href="./ng_editor_default.css" rel="stylesheet">
-
 </head>
 <body>
 <div id="pl_mark">
@@ -13,7 +14,9 @@
 </div>
 <div id="pl_header">
     <div id="pl_login_account">
-        <img class="pl_login_avatar" src="#" onerror="this.onerror='';src='/wxapp/asset/simpleboot/images/avatar/default.jpg'">
+        <div class="pl_login_avatar_border">
+            <img class="pl_login_avatar" src="#" onerror="this.onerror='';src='/wxapp/asset/simpleboot/images/avatar/default.jpg'">
+        </div>
         <div class="pl_login_info">
             <div class="pl_login_name">#</div>
             <div class="pl_login_group">##</div>
@@ -21,6 +24,15 @@
     </div>
     <div id="pl_work_info">
         <div class="pl_work_info_name">#</div>
+    </div>
+    <div id="pl_work_publish">
+        <div class="pl_work_publish_opt">
+            <input type="checkbox" name="publish[]" value="mini" id="pub_opt_miniapp"> <label for="pub_opt_miniapp">小程序</label>
+            <input type="checkbox" name="publish[]" value="h5" id="pub_opt_h5"> <label for="pub_opt_h5">h5</label>
+        </div>
+
+        <button class="btn btn-primary js-ajax-submit" type="submit">发布</button>
+
     </div>
 </div>
 <div id="pl_container">
@@ -50,6 +62,7 @@
             <ul class="pl_bar">
                 <li><a href="#" onclick="javascript:void(0);" class="page_redo">撤销</a></li>
                 <li><a href="#" onclick="javascript:void(0);" class="page_save">保存</a></li>
+                <li><a href="#" onclick="javascript:void(0);" class="page_add">新建</a></li>
             </ul>
         </div>
         <div id="pl_mid_container">
@@ -100,15 +113,16 @@
 <script src="./ng_editor.js"></script>
 <script type="text/javascript">
     $(function(){
-        $('body').ng_editor({
+        var editor = new NG_EDITOR({
             'company_id' : '123456',
             'work_id' : 'wx_3246',
-            'work_name' : '聚米西',
-            'user_id' : '1',
+            'work_name' : 'XX地产',
+            'user_id' : '2',
             'account_api': './mock/api.php?m=user&c=account',
             'build_page_api':'./mock/api.php?m=page&c=lists',
             'build_page_info_api':'./mock/api.php?m=page&c=info',
-        });
+            'plugins_api':'./mock/api.php?m=plugins&c=lists',
+        }).init();
     });
 </script>
 </body>
