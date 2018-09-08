@@ -33,12 +33,20 @@ body {
     display: block;
     background: #e3e3e3;
 }
+/*全局遮罩*/
+#pl_mark {display: none;position: absolute;top:0px;left: 0px; z-index: 999;background: transparent;width: 100%;height: 1000px;overflow: hidden;}
+#pl_mark .pl_mark_bg {background :#ccc;opacity:0.4;filter:alpha(opacity=40);width: 100%;height: 100%;}
+#pl_mark .pl_mark_img {width: 800px;height: 600px;display: block;margin:20px auto;position: fixed;top: 10px;left: 180px;}
 /*顶部用户信息*/
-#pl_login_account {width: 200px;height: 100%;padding-left:10px;overflow: hidden;}
+#pl_login_account {width: 200px;height: 100%;padding-left:10px;overflow: hidden;float: left;}
 #pl_login_account .pl_login_avatar{float: left;margin-top:2px;width: 44px;height: 44px;}
 #pl_login_account .pl_login_info{margin-left:10px;float: left;width: 120px;overflow: hidden;}
 #pl_login_account .pl_login_info .pl_login_name{height: 26px;font-size: 14px;line-height:28px;color: blue;clear: both;}
 #pl_login_account .pl_login_info .pl_login_group {height: 18px; font-size: 12px;line-height: 22px;color: #00a0e9}
+
+#pl_work_info {width: 200px;height: 100%;padding-left:300px;overflow: hidden;float: left;}
+#pl_work_info .pl_work_info_name {color: orangered;font-size: 16px;margin-top: 15px;}
+#pl_work_info .pl_work_info_id {}
 
 #pl_container #pl_left,#pl_container #pl_mid,#pl_container #pl_right{min-height: 550px;height: 800px;}
 #pl_container #pl_left {
@@ -68,7 +76,7 @@ body {
     float: left;
 }
 #pl_container #pl_mid #pl_mid_top {height: 24px;width: 100%;padding: 5px 0px;background: #0F3A56;border-bottom: 1px solid #fff;}
-#pl_mid_top .pl_bar li{float: right;width: 10%;font-size: 16px;text-align: center;}
+#pl_mid_top .pl_bar li{float: right;width: 15%;font-size: 16px;text-align: center;}
 #pl_container #pl_right {
     width: 30.3%;
     float: right;
@@ -76,7 +84,8 @@ body {
 #pl_container #pl_right #pl_right_top {height: 24px;width: 100%;padding: 5px 0px;background: #0F3A56;border-bottom: 1px solid #fff;}
 #pl_right_top .pl_bar li{float: left;width: 100%;font-size: 16px;text-align: center;}
 
-#pl_miniapp_bg {width: 374px;height: 668px;margin: 30px auto;display: block;background: #ccc; }
+#pl_miniapp_bg {width: 374px;height: 668px;margin: 30px auto;display: block;background: #ccc; overflow: hidden;}
+#pl_miniapp_container {width: 100%;height: 100%;overflow: hidden;}
 #pl_miniapp_header{width:100%;height: 44px;line-height:44px;background: #f27a4b;}
 #pl_miniapp_main{width:100%;height: 634px;display: block;overflow-x:hidden;overflow-y: auto;}
 
@@ -101,6 +110,8 @@ body {
 
 /*页面部分*/
 .ng_tag_ctl{clear: both;}
-.ng_page_item{width: 142px;height: 234px;margin-left: 4px;margin-right:2px;margin-top: 10px;  float: left; border: 1px solid #fff;}
-.ng_page_item .ng_page_snapshot{height: 204px;whith:100%;background: #fff;border-bottom: 1px solid #ccc;}
+.ng_page_item{width: 142px;height: 234px;margin-left: 3px;margin-right:2px;margin-top: 10px;  float: left; border: 1px solid #fff;}
+.ng_page_item .ng_page_snapshot{height: 204px;whith:100%;background: #fff;border-bottom: 1px solid #ccc;padding: 0px;margin: 0px;border: 0px;overflow: hidden;}
+.ng_page_item .ng_page_snapshot a {width: 100%;height: 100%;display: block;}
+.ng_page_item .ng_page_snapshot img{width: 100%;height: auto;}
 .ng_page_item .ng_page_item_title {height: 24px;line-height: 24px;text-align: center;color: #fff;font-size: 14px; }

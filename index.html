@@ -7,14 +7,21 @@
 
 </head>
 <body>
-<div id="pl_header">
-<div id="pl_login_account">
-    <img class="pl_login_avatar" src="#" onerror="this.onerror='';src='/wxapp/asset/simpleboot/images/avatar/default.jpg'">
-    <div class="pl_login_info">
-        <div class="pl_login_name">#</div>
-        <div class="pl_login_group">##</div>
-    </div>
+<div id="pl_mark">
+    <div class="pl_mark_bg"></div>
+    <img class="pl_mark_img" src="./images/pl_huge_loading.gif" />
 </div>
+<div id="pl_header">
+    <div id="pl_login_account">
+        <img class="pl_login_avatar" src="#" onerror="this.onerror='';src='/wxapp/asset/simpleboot/images/avatar/default.jpg'">
+        <div class="pl_login_info">
+            <div class="pl_login_name">#</div>
+            <div class="pl_login_group">##</div>
+        </div>
+    </div>
+    <div id="pl_work_info">
+        <div class="pl_work_info_name">#</div>
+    </div>
 </div>
 <div id="pl_container">
     <div id="pl_left">
@@ -48,17 +55,20 @@
         <div id="pl_mid_container">
 
             <div id="pl_miniapp_bg">
-                <div id="pl_miniapp_header">
-                    <div class="pl_miniapp_title">标题</div>
-                    <div class="pl_miniapp_top_op">
-                        <div class="fl pl_miniapp_top_op_point"></div>
-                        <div class="fl pl_miniapp_top_op_sep"></div>
-                        <div class="fl pl_miniapp_top_op_cirle"></div>
+                <div id="pl_miniapp_container">
+                    <div id="pl_miniapp_header" rel="">
+                        <div class="pl_miniapp_title">标题</div>
+                        <div class="pl_miniapp_top_op">
+                            <div class="fl pl_miniapp_top_op_point"></div>
+                            <div class="fl pl_miniapp_top_op_sep"></div>
+                            <div class="fl pl_miniapp_top_op_cirle"></div>
+                        </div>
+                    </div>
+                    <div id="pl_miniapp_main">
+
                     </div>
                 </div>
-                <div id="pl_miniapp_main">
 
-                </div>
             </div>
 
         </div>
@@ -85,15 +95,19 @@
     };
 </script>
 <script src="/wxapp/asset/js/jquery.js"></script>
+<script type="text/javascript" src="./html2canvas.min.js"></script>
 <script src="/wxapp/asset/js/wind.js"></script>
 <script src="./ng_editor.js"></script>
 <script type="text/javascript">
     $(function(){
         $('body').ng_editor({
             'company_id' : '123456',
+            'work_id' : 'wx_3246',
+            'work_name' : '聚米西',
             'user_id' : '1',
             'account_api': './mock/api.php?m=user&c=account',
             'build_page_api':'./mock/api.php?m=page&c=lists',
+            'build_page_info_api':'./mock/api.php?m=page&c=info',
         });
     });
 </script>
