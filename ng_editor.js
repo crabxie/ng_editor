@@ -23,6 +23,168 @@
         },
         this.options = $.extend({}, this.defaults, opt);
 
+
+
+        $.contextMenu({
+            selector: '.image_menu',
+            callback: function(key, options) {
+                var m = "global: " + key;
+                switch (key) {
+                    case 'delete' : {
+                        var root_elem = $(this);
+                        $(root_elem).remove();
+                    }break;
+                    default :break
+                }
+            },
+            items: {
+                "upload": {
+                    name: "上传",
+                    icon: "",
+                },
+                "attr": {name: "属性", icon: ""},
+                "delete": {name: "删除", icon: ""},
+                "sep1": "---------",
+                "quit": {name: "退出", icon: ""}
+            }
+        });
+
+        this.hire = function()
+        {
+            $( "#pl_miniapp_main" ).sortable({
+                cursor: "move",
+                revert: true,
+                items: ".image_menu",
+                //placeholder: "sortable-placeholder",
+                start: function( event, ui ) {
+                    ui.item.css('width','374px');
+                },
+                stop: function( event, ui ) {
+                    ui.item.css('width','100%');
+                }
+
+            });
+        }
+        //通用方法
+        this.trim = function(str)
+        {
+            return str.replace(/(^\s*)|(\s*$)/g, '');
+        }
+
+        this.ltrim = function(str)
+        {
+            return str.replace(/^\s*/g,'');
+        }
+        this.rtrim = function(str)
+        {
+            return str.replace(/\s*$/,'');
+        }
+        this.uuid = function(len, radix) {
+            var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+            var uuid = [], i;
+            radix = radix || chars.length;
+
+            if (len) {
+                // Compact form
+                for (i = 0; i < len; i++) uuid[i] = chars[0 | Math.random()*radix];
+            } else {
+                // rfc4122, version 4 form
+                var r;
+
+                // rfc4122 requires these characters
+                uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
+                uuid[14] = '4';
+
+                // Fill in random data. At i==19 set the high bits of clock sequence as
+                // per rfc4122, sec. 4.1.5
+                for (i = 0; i < 36; i++) {
+                    if (!uuid[i]) {
+                        r = 0 | Math.random()*16;
+                        uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r];
+                    }
+                }
+            }
+
+            return uuid.join('');
+        }
+
+        this.parser_layout = function (selector,layout_item,layout_style) {
+
+            if(typeof layout_item == 'object') {
+                var elem_name = layout_item.name;
+                if (layout_item.id) {
+                    var elem_id = layout_item.id;
+                } else {
+                    var elem_id = 'ng_'+ng_self.uuid(8,16);
+                }
+                console.log(layout_style.css);
+                var style = '';
+                if (layout_item.config.style) {
+                    style = layout_item.config.style;
+                } else if(layout_item.class){
+
+                    var reStr = '\.' + layout_item.class + '[ \s]*\{([^\}]+?)\}';
+                    var pattern = new RegExp(reStr, "gi");
+                    var match = pattern.exec(layout_style.css);
+                    if (match && match[1]) {
+                        style = match[1];
+                    }
+
+
+                }
+
+                if ('image' == elem_name) {
+
+                    var _layout_str = '<img style="'+style+'" onerror=\'this.onerror="";this.src="/wxapp/asset/simpleboot/images/default_image.jpg"\' src="" id="'+elem_id+'" class="image_menu  ngedt_'+layout_item.class+'"/>';
+
+                    if (typeof selector == 'object') {
+                        selector.append(_layout_str)
+                    } else if (typeof selector == 'string') {
+                        $(selector).append(_layout_str);
+                    }
+                    var root_elem = $('#'+elem_id);
+
+                    //$(root_elem).on( "contextmenu", function(){
+                    //    alert(1);
+                    //} );
+                    if (typeof layout_item.subs == 'array') {
+                        if (layout_item.subs.length>0) {
+
+                            for(var loop_index in layout_item.subs) {
+                                var layout_item = layout_item.subs[loop_index];
+                                if (layout_item.type == 'base') {
+                                    ng_self.parser_layout(root_elem,layout_item);
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        this.page_layout = function(root_elem,layout_data,layout_style) {
+            //console.log(layout_data);
+
+
+            if(typeof layout_data == 'object') {
+
+                for(var loop_index in layout_data.layout) {
+                    var layout_item = layout_data.layout[loop_index];
+                    if (layout_item.type == 'base') {
+                        ng_self.parser_layout($(root_elem),layout_item,layout_style);
+                    }
+                }
+            }
+        }
+
+        this.clean_cache = function(selector) {
+            $(selector).click(function(){
+                sessionStorage.clear();
+                ng_self.open_dialog(true,'清除缓存成功');
+            });
+        }
+        //通用方法结束
+
         //获得一个加载中的模版
         this.get_data_loading_template = function(msg) {
             return "<div class='item_loading_box'><img src='/ngeditor/images/pl_tiny_loading.gif'/><div class='item_loading_mess'>"+msg+"</div></div>";
@@ -130,24 +292,57 @@
                             $("#ng_page .ng_page_snapshot a").click(function(){
                                 var btn_self = this;
                                 var rel = $(btn_self).attr('rel');
+                                rel = ng_self.trim(rel);
                                 var post_data = $.extend({}, {'page_id':rel}, ng_self.user_post_data);
                                 if (ng_self.options.debug) {
                                     console.log('page:'+rel+' on click');
-                                    console.log(post_data);
                                 }
-                                ng_self._load(ng_self.options.build_page_info_api,'post',post_data,function(flag,respone){
-                                    var page_window = respone.info.window;
-                                    var page_show_title = page_window.navigationBarTitleText;
-                                    $('#pl_miniapp_header').attr('rel',rel);
-                                    if(flag) {
+                                var current_rel = $('#pl_miniapp_header').attr('rel');
+                                current_rel = ng_self.trim(current_rel);
+
+                                if (typeof sessionStorage !='object') {
+                                    alert('请使用Firefox ，Chrome 支持H5的storage浏览器');
+                                    return;
+                                }
+
+                                if (current_rel!=rel) {
+                                    //先从storeage获取
+                                    var storage_data = sessionStorage.getItem(rel);
+                                    if(storage_data) {
+                                        storage_data = JSON.parse(storage_data);
+                                        console.log('from storage:'+rel);
+                                        var page_window = storage_data.window;
+                                        var page_show_title = page_window.navigationBarTitleText;
+                                        $('#pl_miniapp_header').attr('rel',rel);
                                         $('#pl_miniapp_header').css('background-color',page_window.navigationBarBackgroundColor);
                                         $('#pl_miniapp_container .pl_miniapp_title').text(page_show_title).css('color',page_window.navigationBarTextStyle);
+                                        ng_self.page_layout('#pl_miniapp_main',storage_data.page,storage_data.style);
                                     } else {
-                                        $('#pl_miniapp_container .pl_miniapp_title').text(default_page_title);
-                                    }
-                                    //build the page
+                                        //然后再从
+                                        ng_self._load(ng_self.options.build_page_info_api,'post',post_data,function(flag,respone){
+                                            console.log('from network:'+rel);
+                                            if(typeof respone.info == 'object') {
+                                                sessionStorage.setItem(rel,JSON.stringify(respone.info));
+                                                var page_window = respone.info.window;
+                                                var page_show_title = page_window.navigationBarTitleText;
+                                                $('#pl_miniapp_header').attr('rel',rel);
+                                                if(flag) {
+                                                    $('#pl_miniapp_header').css('background-color',page_window.navigationBarBackgroundColor);
+                                                    $('#pl_miniapp_container .pl_miniapp_title').text(page_show_title).css('color',page_window.navigationBarTextStyle);
+                                                } else {
+                                                    $('#pl_miniapp_container .pl_miniapp_title').text(default_page_title);
+                                                }
+                                                ng_self.page_layout('#pl_miniapp_main',respone.info.page,respone.info.style);
+                                            }
 
-                                });
+                                            //build the page
+
+                                        });
+                                    }
+
+
+                                }
+
                             });
 
                             setTimeout(function(){
@@ -284,10 +479,13 @@
 
             this.save_page({});
 
+            this.clean_cache('#ng_clean_cache');
+
             setTimeout(function(){
                 $('#pl_mark').css('display','none');
             },1000);
 
+            this.hire();
             return this;
         }
 
