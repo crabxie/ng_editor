@@ -12,8 +12,10 @@
             'debug': true,
             'company_id':'',
             'work_id':'',
+            'app_sid' : '',
             'work_name':'',
             'user_id':'',
+            'token':'',
             'account_api':'',
             'build_page_api':'',
             'build_page_info_api':'',
@@ -23,12 +25,12 @@
 
         //获得一个加载中的模版
         this.get_data_loading_template = function(msg) {
-            return "<div class='item_loading_box'><img src='./images/pl_tiny_loading.gif'/><div class='item_loading_mess'>"+msg+"</div></div>";
+            return "<div class='item_loading_box'><img src='/ngeditor/images/pl_tiny_loading.gif'/><div class='item_loading_mess'>"+msg+"</div></div>";
         }
 
 
         //基础用户数据
-        this.user_data = {'user_id':this.options.user_id,'company_id':this.options.company_id,'work_id':this.options.work_id};
+        this.user_data = {'user_id':this.options.user_id,'company_id':this.options.company_id,'work_id':this.options.work_id,'app_sid':this.options.app_sid};
 
         this.open_dialog = function(flag,msg) {
             Wind.use('artDialog', 'iframeTools', function(){
@@ -97,24 +99,28 @@
                             $('#ng_page').html('');
                             var default_page_id = '';
                             var default_page_title = '未命名';
+                            var pages = respone.info;
+
+
                             if (flag) {
-                                for(var page_id in respone) {
+                                for(var loop_index in pages) {
+                                    var page_id = pages[loop_index].page_id;
                                     if(!default_page_id) default_page_id = page_id;
                                     var html_str = [];
                                     html_str.push('<div class="ng_page_item" id="'+page_id+'" >');
-                                    html_str.push('<div class="ng_page_snapshot"><a rel="'+page_id+'" href="javascript:void(0);"><img src="'+respone[page_id].snapshot+'"/></a></div>');
-                                    html_str.push('<input type="hidden" name="ng_pages[]" value="'+page_id+'">');
-                                    html_str.push('<div class="ng_page_item_title">'+respone[page_id].title+'</div>');
+                                    html_str.push('<div class="ng_page_snapshot"><a rel="'+page_id+'" href="javascript:void(0);"><img src="'+pages[loop_index].snapshot+'"/></a></div>');
+                                    html_str.push('<input type="hidden" name="ng_pages[]" value="'+pages[loop_index].path+'">');
+                                    html_str.push('<div class="ng_page_item_title">'+pages[loop_index].title+'</div>');
                                     html_str.push('</div>');
                                     $('#ng_page').append(html_str.join(''));
                                 }
                                 //默认点击第一个。
                             } else {
-                                default_page_id = 'page_1';
+                                default_page_id = 'index';
                                 var html_str = [];
                                 html_str.push('<div class="ng_page_item" id="'+default_page_id+'" >');
                                 html_str.push('<div class="ng_page_snapshot"><a rel="'+default_page_id+'" href="javascript:void(0);"><img src=""/></a></div>');
-                                html_str.push('<input type="hidden" name="ng_pages[]" value="'+default_page_id+'">');
+                                html_str.push('<input type="hidden" name="ng_pages[]" value="pages\\index\\'+default_page_id+'">');
                                 html_str.push('<div class="ng_page_item_title">'+default_page_title+'</div>');
                                 html_str.push('</div>');
                                 $('#ng_page').append(html_str.join(''));
@@ -130,11 +136,12 @@
                                     console.log(post_data);
                                 }
                                 ng_self._load(ng_self.options.build_page_info_api,'post',post_data,function(flag,respone){
-                                    var page_show_title = respone.title;
-                                    var page_config = respone.config;
+                                    var page_window = respone.info.window;
+                                    var page_show_title = page_window.navigationBarTitleText;
                                     $('#pl_miniapp_header').attr('rel',rel);
                                     if(flag) {
-                                        $('#pl_miniapp_container .pl_miniapp_title').text(page_show_title);
+                                        $('#pl_miniapp_header').css('background-color',page_window.navigationBarBackgroundColor);
+                                        $('#pl_miniapp_container .pl_miniapp_title').text(page_show_title).css('color',page_window.navigationBarTextStyle);
                                     } else {
                                         $('#pl_miniapp_container .pl_miniapp_title').text(default_page_title);
                                     }
@@ -209,6 +216,7 @@
 
                     var load_func = eval('ng_self.get_'+rel);
                     if (typeof load_func == "function") {
+                        console.log('load:'+'ng_self.get_'+rel);
                         load_func();
                     }
                 });
@@ -230,8 +238,13 @@
                 data: myform,
                 contentType: false,
                 processData: false,
+                beforeSend: function(request) {
+                    request.setRequestHeader("NGTOKEN",ng_self.options.token);
+                },
                 success: function (respone) {
-                    respone = eval('['+respone+']')[0];
+                    if (typeof  respone =='string') {
+                        respone = eval('['+respone+']')[0];
+                    }
                     var respone_data =respone.data;
                     if (respone.status) {
                         if (ng_self.options.debug) {

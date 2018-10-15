@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{title}}-{{title}}</title>
+    <title>{{app_name}}-{{flatform}}-小程序应用编辑器</title>
     <link href="/wxapp/asset/simpleboot/themes/flat/theme.min.css" rel="stylesheet">
     <link href="/wxapp/asset/js/artDialog/skins/default.css" rel="stylesheet" />
     <link href="/ngeditor/ng_editor_default.css" rel="stylesheet">
@@ -118,10 +118,12 @@
         var editor = new NG_EDITOR({
             'company_id' : '{{company_id}}',
             'work_id' : '{{work_id}}',
+            'app_sid' : '{{app_sid}}',
             'work_name' : '{{work_name}}',
             'user_id' : '{{account_uid}}',
+            'token' : '{{token}}',
             'account_api': '{{api_host}}/Account?act=user',
-            'build_page_api':'{{api_host}}/workapp?act=page',
+            'build_page_api':'{{api_host}}/workapp?act=pages',
             'build_page_info_api':'{{api_host}}/workapp?act=pageinfo',
             'plugins_api':'{{api_host}}/plugins&act=lists',
         }).init();
