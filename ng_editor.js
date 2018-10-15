@@ -49,23 +49,23 @@
         }
         //活动业务详情
         this.get_work_info = function(opt) {
-            $('#pl_work_info .pl_work_info_name').text('业 务: '+ng_self.options.work_name+ " (id:"+ng_self.options.work_id+")");
+            //$('#pl_work_info .pl_work_info_name').text('业 务: '+ng_self.options.work_name+ " (id:"+ng_self.options.work_id+")");
 
         }
         //获取账户信息
         this.get_account = function(opt) {
             if (ng_self.options.account_api && ng_self.options.company_id && ng_self.options.user_id) {
                 ng_self.user_post_data = $.extend({},ng_self.user_data,opt);
-                $(document).queue("ajaxRequests",
-                    ng_self._load(ng_self.options.account_api,'post',ng_self.user_post_data,function(flag,respone){
-                            if (flag) {
-                                $('#pl_login_account').find('.pl_login_avatar').attr('src',respone.avatar);
-                                $('#pl_login_account').find('.pl_login_name').text(respone.name+' ('+respone.account+')');
-                                var group_type = respone.group_type==0 ? '主账户' :"子账户";
-                                $('#pl_login_account').find('.pl_login_group').text(group_type);
-                            }
-                        })
-                );
+                //$(document).queue("ajaxRequests",
+                //    ng_self._load(ng_self.options.account_api,'post',ng_self.user_post_data,function(flag,respone){
+                //            if (flag) {
+                //                $('#pl_login_account').find('.pl_login_avatar').attr('src',respone.avatar);
+                //                $('#pl_login_account').find('.pl_login_name').text(respone.name+' ('+respone.account+')');
+                //                var group_type = respone.group_type==0 ? '主账户' :"子账户";
+                //                $('#pl_login_account').find('.pl_login_group').text(group_type);
+                //            }
+                //        })
+                //);
             }
         }
         //保存页面设置
@@ -182,6 +182,9 @@
                                 }
                             }
                             $('#ng_componer').attr('is_loaded','loaded');
+
+                            //bind componer event
+
                         })
                     );
                 }

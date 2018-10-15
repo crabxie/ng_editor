@@ -78,6 +78,6 @@ body {padding:0;margin:0;font-family:Arial, "Microsoft Yahei";  }
 .ng_page_item .ng_page_item_title {height: 24px;line-height: 24px;text-align: center;color: #fff;font-size: 14px; }
 
 /*组件部分*/
-.ng_plugin_item{width: 130px;height: 160px;margin: 10px 8px;float: left; border: 1px solid #fff;}
-.ng_plugin_item .ng_plugin_item_icon{width: 128px;margin: 1px auto;}
+.ng_plugin_item{width: 66px;height: 90px;margin: 10px 8px;float: left; border: 1px solid #fff;}
+.ng_plugin_item .ng_plugin_item_icon{width: 64px;margin: 1px auto;}
 .ng_plugin_item .ng_plugin_item_title{height: 24px;line-height: 24px;text-align: center;color: #fff;font-size: 14px; }

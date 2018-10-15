@@ -2,28 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ng editor</title>
+    <title>{{title}}-{{title}}</title>
     <link href="/wxapp/asset/simpleboot/themes/flat/theme.min.css" rel="stylesheet">
     <link href="/wxapp/asset/js/artDialog/skins/default.css" rel="stylesheet" />
-    <link href="./ng_editor_default.css" rel="stylesheet">
+    <link href="/ngeditor/ng_editor_default.css" rel="stylesheet">
 </head>
 <body>
 <div id="pl_mark">
     <div class="pl_mark_bg"></div>
-    <img class="pl_mark_img" src="./images/pl_huge_loading.gif" />
+    <img class="pl_mark_img" src="/ngeditor/images/pl_huge_loading.gif" />
 </div>
 <div id="pl_header">
     <div id="pl_login_account">
         <div class="pl_login_avatar_border">
-            <img class="pl_login_avatar" src="#" onerror="this.onerror='';src='/wxapp/asset/simpleboot/images/avatar/default.jpg'">
+            <img class="pl_login_avatar" src="{{account_avatar}}" onerror="this.onerror='';src='/wxapp/asset/simpleboot/images/avatar/default.jpg'">
         </div>
         <div class="pl_login_info">
-            <div class="pl_login_name">#</div>
-            <div class="pl_login_group">##</div>
+            <div class="pl_login_name">{{account_name}}</div>
+            <div class="pl_login_group">{{account_user}}</div>
         </div>
     </div>
     <div id="pl_work_info">
-        <div class="pl_work_info_name">#</div>
+        <div class="pl_work_info_name">
+            {{work_name}}\{{app_name}}
+        </div>
     </div>
     <div id="pl_work_publish">
         <div class="pl_work_publish_opt">
@@ -102,26 +104,26 @@
 <script type="text/javascript">
     var GV = {
         HOST:"/wxapp/",
-        ROOT: "/",
+        ROOT: "/ngeditor/",
         WEB_ROOT: "/",
         JS_ROOT: "./wxapp/asset/js/"
     };
 </script>
 <script src="/wxapp/asset/js/jquery.js"></script>
-<script type="text/javascript" src="./html2canvas.min.js"></script>
+<script type="text/javascript" src="/ngeditor/html2canvas.min.js"></script>
 <script src="/wxapp/asset/js/wind.js"></script>
-<script src="./ng_editor.js"></script>
+<script src="/ngeditor/ng_editor.js"></script>
 <script type="text/javascript">
     $(function(){
         var editor = new NG_EDITOR({
-            'company_id' : '123456',
-            'work_id' : 'wx_3246',
-            'work_name' : 'XX地产',
-            'user_id' : '2',
-            'account_api': './mock/api.php?m=user&c=account',
-            'build_page_api':'./mock/api.php?m=page&c=lists',
-            'build_page_info_api':'./mock/api.php?m=page&c=info',
-            'plugins_api':'./mock/api.php?m=plugins&c=lists',
+            'company_id' : '{{company_id}}',
+            'work_id' : '{{work_id}}',
+            'work_name' : '{{work_name}}',
+            'user_id' : '{{account_uid}}',
+            'account_api': '{{api_host}}/Account?act=user',
+            'build_page_api':'{{api_host}}/workapp?act=page',
+            'build_page_info_api':'{{api_host}}/workapp?act=pageinfo',
+            'plugins_api':'{{api_host}}/plugins&act=lists',
         }).init();
     });
 </script>
