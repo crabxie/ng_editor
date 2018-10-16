@@ -6,124 +6,46 @@
     <link href="/wxapp/asset/simpleboot/themes/flat/theme.min.css" rel="stylesheet">
     <link href="/wxapp/asset/js/artDialog/skins/default.css" rel="stylesheet" />
     <link href="./ng_editor_default.css" rel="stylesheet">
+    <style type="text/css">
+        .containner{display: block;width: 374px;height: 640px;overflow: hidden;margin: 10px auto;border: 1px solid #ccc;}
+        .top {display: block;width: 100%;height: 44px;background-color: #ccc;overflow: hidden;}
+        .tab_container {display: block;width: 100px;height: 44px;}
+        .tab_container ul,.tab_container li {list-style-type: none;}
+        .tab_container ul {display: block;width: 100%;height: 100%;background-color: #c2ccd1;}
+        .tab_container li {width: 33%;margin: 1px;float: left;height: 44px;text-align: center;font-size: 18px;}
+        .main_container{display: flex;justify-content: flex-end;align-items: center;width: 100%;}
+        .main_item {width: 20%;height: 100px;background-color: #00a0e9;margin: 5px;}
+    </style>
 </head>
 <body>
-<div id="pl_mark">
-    <div class="pl_mark_bg"></div>
-    <img class="pl_mark_img" src="./images/pl_huge_loading.gif" />
-</div>
-<div id="pl_header">
-    <div id="pl_login_account">
-        <div class="pl_login_avatar_border">
-            <img class="pl_login_avatar" src="#" onerror="this.onerror='';src='/wxapp/asset/simpleboot/images/avatar/default.jpg'">
+<div>
+    <div class="containner">
+        <div class="top"></div>
+        <div class="main_container">
+            <div class="main_item">xxx</div>
+            <div class="main_item">yy</div>
+            <div class="main_item">ykkky</div>
         </div>
-        <div class="pl_login_info">
-            <div class="pl_login_name">#</div>
-            <div class="pl_login_group">##</div>
-        </div>
-    </div>
-    <div id="pl_work_info">
-        <div class="pl_work_info_name">#</div>
-    </div>
-    <div id="pl_work_publish">
-        <div class="pl_work_publish_opt">
-            <input type="checkbox" name="publish[]" value="mini" id="pub_opt_miniapp"> <label for="pub_opt_miniapp">小程序</label>
-            <input type="checkbox" name="publish[]" value="h5" id="pub_opt_h5"> <label for="pub_opt_h5">h5</label>
-        </div>
-
-        <button class="btn btn-primary js-ajax-submit" type="submit">发布</button>
-
-    </div>
-</div>
-<div id="pl_container">
-    <div id="pl_left">
-        <div id="pl_left_top">
-            <ul class="pl_bar">
-                <li><a href="#" onclick="javascript:void(0);" rel="ng_page" class="ng_tag">页面管理</a></li>
-                <li><a href="#" onclick="javascript:void(0);" rel="ng_componer" class="ng_tag">组件管理</a></li>
-                <li><a href="#" onclick="javascript:void(0);" rel="ng_material" class="ng_tag">素材管理</a></li>
-            </ul>
-            <div class="ng_tag_ctl" id="ng_page" style="display: block;">
-
-
-            </div>
-            <div class="ng_tag_ctl" id="ng_componer" style="display: none;">
-                <div class="ng_componer_item"></div>
-            </div>
-            <div class="ng_tag_ctl" id="ng_material" style="display: none;">
-                <div class="ng_material_item"></div>
-            </div>
-
-        </div>
-        <div id="pl_left_container"></div>
-    </div>
-    <div id="pl_mid">
-        <div id="pl_mid_top">
-            <ul class="pl_bar">
-                <li><a href="#" onclick="javascript:void(0);" class="page_redo">撤销</a></li>
-                <li><a href="#" onclick="javascript:void(0);" class="page_save">保存</a></li>
-                <li><a href="#" onclick="javascript:void(0);" class="page_add">新建</a></li>
+        <div class="tab_container">
+            <ul>
+                <li>A</li>
+                <li>B</li>
+                <li>C</li>
             </ul>
         </div>
-        <div id="pl_mid_container">
-
-            <div id="pl_miniapp_bg">
-                <div id="pl_miniapp_container">
-                    <div id="pl_miniapp_header" rel="">
-                        <div class="pl_miniapp_title">标题</div>
-                        <div class="pl_miniapp_top_op">
-                            <div class="fl pl_miniapp_top_op_point"></div>
-                            <div class="fl pl_miniapp_top_op_sep"></div>
-                            <div class="fl pl_miniapp_top_op_cirle"></div>
-                        </div>
-                    </div>
-                    <div id="pl_miniapp_main">
-
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-    </div>
-    <div id="pl_right">
-        <div id="pl_right_top">
-            <ul class="pl_bar">
-                <li><a href="#" onclick="javascript:void(0);" class="page_nothing">属性</a></li>
-            </ul>
-        </div>
-        <div id="pl_right_container"></div>
     </div>
 </div>
 
-<div id="pl_footer">
 
-</div>
 <script type="text/javascript">
-    var GV = {
-        HOST:"/wxapp/",
-        ROOT: "/",
-        WEB_ROOT: "/",
-        JS_ROOT: "./wxapp/asset/js/"
-    };
+
 </script>
 <script src="/wxapp/asset/js/jquery.js"></script>
 <script type="text/javascript" src="./html2canvas.min.js"></script>
 <script src="/wxapp/asset/js/wind.js"></script>
 <script src="./ng_editor.js"></script>
 <script type="text/javascript">
-    $(function(){
-        var editor = new NG_EDITOR({
-            'company_id' : '123456',
-            'work_id' : 'wx_3246',
-            'work_name' : 'XX地产',
-            'user_id' : '2',
-            'account_api': './mock/api.php?m=user&c=account',
-            'build_page_api':'./mock/api.php?m=page&c=lists',
-            'build_page_info_api':'./mock/api.php?m=page&c=info',
-            'plugins_api':'./mock/api.php?m=plugins&c=lists',
-        }).init();
-    });
+
 </script>
 </body>
 </html>

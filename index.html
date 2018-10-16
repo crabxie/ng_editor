@@ -129,6 +129,7 @@
 <script type="text/javascript" src="/ngeditor/html2canvas.min.js"></script>
 <script src="/wxapp/asset/js/wind.js"></script>
 <script src="/ngeditor/ng_editor.js"></script>
+
 <script type="text/javascript">
     $(function(){
         var editor = new NG_EDITOR({
@@ -142,9 +143,40 @@
             'build_page_api':'{{api_host}}/workapp?act=pages',
             'build_page_info_api':'{{api_host}}/workapp?act=pageinfo',
             'save_page_api':'{{api_host}}/workapp?act=savepage',
-            'plugins_api':'{{api_host}}/plugins&act=lists',
+            'plugins_api':'{{api_host}}/plugins?act=groups',
+            'plugins_call_api':'{{api_host}}/plugins?act=pl'
         }).init();
+        window.editor = editor;
     });
+</script>
+<script type="text/javascript">
+    function open_frame_dialog(url,dialog_title,callback){
+        Wind.use("artDialog","iframeTools",function(){
+            art.dialog.open( url, {
+                title: dialog_title,
+                id: new Date().getTime(),
+                width: '650px',
+                height: '420px',
+                lock: true,
+                fixed: true,
+                background:"#CCCCCC",
+                opacity:0,
+                ok: function() {
+                    if (typeof callback =='function') {
+                        var iframewindow = this.iframe.contentWindow;
+                        var files=iframewindow.get_selected_items();
+                        if(files){
+                            callback.apply(this, [this, files]);
+                        }else{
+                            return false;
+                        }
+
+                    }
+                },
+                cancel: true
+            });
+        });
+    }
 </script>
 </body>
 </html>

@@ -21,6 +21,7 @@
             'build_page_info_api':'',
             'save_page_api' : '',
             'plugins_api':'',
+            'plugins_call_api':'',
         },
         this.options = $.extend({}, this.defaults, opt);
 
@@ -39,10 +40,7 @@
                 }
             },
             items: {
-                "upload": {
-                    name: "上传",
-                    icon: "",
-                },
+
                 "attr": {name: "属性", icon: ""},
                 "delete": {name: "删除", icon: ""},
                 "sep1": "---------",
@@ -58,12 +56,11 @@
                 items: ".image_menu",
                 //placeholder: "sortable-placeholder",
                 start: function( event, ui ) {
-                    ui.item.css('width','374px');
+                    ui.item.css('max-width','374px');
                 },
                 stop: function( event, ui ) {
-                    ui.item.css('width','100%');
+                    ui.item.css('max-width','100%');
                 }
-
             });
         }
         //通用方法
@@ -155,7 +152,6 @@
 
                 $('#ng_page_window').text(JSON.stringify(json_obj));
 
-                console.log(JSON.stringify(json_obj));
                 sessionStorage.setItem('ng_window',JSON.stringify(json_obj));
 
             });
@@ -183,15 +179,13 @@
                     if (match && match[1]) {
                         style = match[1];
                     }
-
-
                 }
 
                 var _layout_str = '';
                 if ('image' == elem_name) {
                     var _image_box  =  '<img style="'+style+'" onerror=\'this.onerror="";this.src="/wxapp/asset/simpleboot/images/default_image.jpg"\' src="" id="'+elem_id+'" class="  ngedt_'+layout_item.class+'"/>';
 
-                    _layout_str = '<div class="layout_box image_menu" id="'+elem_id+'_box">';
+                    _layout_str = '<div class="layout_box image_menu" rel="'+elem_id+'" id="'+elem_id+'_box">';
                     _layout_str+= _image_box;
 
                     var key_post_name = '';
@@ -207,8 +201,6 @@
                     _layout_str+= '</div>';
 
 
-
-                    console.log($(_layout_str));
                     if (typeof selector == 'object') {
                         selector.append(_layout_str)
                     } else if (typeof selector == 'string') {
@@ -216,9 +208,6 @@
                     }
                     var root_elem = $('#'+elem_id+'_box');
 
-                    //$(root_elem).on( "contextmenu", function(){
-                    //    alert(1);
-                    //} );
                     if (typeof layout_item.subs == 'array') {
                         if (layout_item.subs.length>0) {
                             var parent_array = [];
@@ -254,11 +243,20 @@
                 }
             }
         }
+        this.plugin_append = function(obj,data)
+        {
+            console.log('----plugin_append----');
+            console.log(obj);
+            console.log(data);
+            var elem_id = ng_self.uuid(8,16);
+            var append_str = '<div class="layout_box image_menu" style="width: 100%;height: 40px;background: #acd;" rel="'+elem_id+'" id="'+elem_id+'_box">12321</div>';
+            $('#pl_miniapp_main').append(append_str);
+        }
 
         this.clean_cache = function(selector) {
             $(selector).click(function(){
                 sessionStorage.clear();
-                ng_self.open_dialog(true,'清除缓存成功');
+                ng_self.appeditor_open_dialog(true,'清除缓存成功');
             });
         }
         //通用方法结束
@@ -272,7 +270,7 @@
         //基础用户数据
         this.user_data = {'user_id':this.options.user_id,'company_id':this.options.company_id,'work_id':this.options.work_id,'app_sid':this.options.app_sid};
 
-        this.open_dialog = function(flag,msg) {
+        this.appeditor_open_dialog = function(flag,msg) {
             Wind.use('artDialog', 'iframeTools', function(){
                 icon = flag ? "success" : "error";
                 art.dialog({
@@ -286,6 +284,33 @@
                     ok: function () {
                         return true;
                     }
+                });
+            });
+        }
+        this.appeditor_open_frame_dialog = function(url,dialog_title,callback){
+            Wind.use("artDialog","iframeTools",function(){
+                art.dialog.open( url, {
+                    title: dialog_title,
+                    id: new Date().getTime(),
+                    width: '650px',
+                    height: '420px',
+                    lock: true,
+                    fixed: true,
+                    background:"#CCCCCC",
+                    opacity:0,
+                    ok: function() {
+                        if (typeof callback =='function') {
+                            var iframewindow = this.iframe.contentWindow;
+                            var files=iframewindow.get_selected_items();
+                            if(files){
+                                callback.apply(this, [this, files,extra_params]);
+                            }else{
+                                return false;
+                            }
+
+                        }
+                    },
+                    cancel: true
                 });
             });
         }
@@ -321,7 +346,7 @@
                     var dataUrl = canvas.toDataURL();
                     $('#'+rel).find('.ng_page_snapshot a img').attr('src',dataUrl);
                     $(btn_self).text('保存');
-                    ng_self.open_dialog(true,'保存成功！');
+                    ng_self.appeditor_open_dialog(true,'保存成功！');
 
                     var post_data = {}
                     $('.pre_data').each(function(){
@@ -480,12 +505,22 @@
                                 console.log('plugins: loaded');
                                 console.log(respone);
                             }
+                            respone = respone.info;
                             if (flag) {
+                                var query_user_data = '';
+                                var query_user_datas = [];
+                                for(var ukey in ng_self.user_data) {
+                                    query_user_datas.push(ukey+'='+ng_self.user_data[ukey]);
+                                }
+                                query_user_data = query_user_datas.join('&');
                                 for(var index in respone) {
-                                    var plugin_id = respone[index]['path']+'/'+respone[index]['id'];
+                                    var plugin_id = respone[index]['class_name']+'_'+respone[index]['plugin_id'];
+                                    var plugin_call_api = ng_self.options.plugins_call_api+'&pl_name='+respone[index]['class_name']+'&pl_act=lists&pl_id='+respone[index]['plugin_id'];
+                                    plugin_call_api += '&'+query_user_data;
+                                    plugin_call_api = plugin_call_api+'&token='+ng_self.options.token+'&_t='+new Date().getTime();
                                     var html_str = [];
                                     html_str.push('<div class="ng_plugin_item" id="'+plugin_id+'" >');
-                                    html_str.push('<div class="ng_plugin_item_icon"><a rel="'+plugin_id+'" href="javascript:void(0);"><img src="'+plugin_id+'/'+respone[index]['icon']+'"/></a></div>');
+                                    html_str.push('<div class="ng_plugin_item_icon"><a rel="'+plugin_id+'" href="javascript:open_frame_dialog(\''+plugin_call_api+'\',\''+respone[index].name+'\',editor.plugin_append);"><img src="'+respone[index]['icon']+'"/></a></div>');
                                     html_str.push('<div class="ng_plugin_item_title">'+respone[index].name+'</div>');
                                     html_str.push('</div>');
                                     $('#ng_componer').append(html_str.join(''));
@@ -549,6 +584,14 @@
                 });
             });
             $('a.ng_tag').get(index).click();
+        };
+
+        this.dubug_post = function()
+        {
+            var test_url = 'http://work.crab.com/wxapp/debug.php/api/123456/workapp?act=test';
+            ng_self._load(test_url,'post',ng_self.user_data,function(flag,respone) {
+
+            });
         };
         this._load = function(url,method,data,cb) {
 
@@ -619,6 +662,8 @@
 
             this.handle_attr_tag(0);
             this.hire();
+
+            //this.dubug_post();
             return this;
         }
 
