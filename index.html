@@ -92,10 +92,21 @@
     <div id="pl_right">
         <div id="pl_right_top">
             <ul class="pl_bar">
-                <li><a href="#" onclick="javascript:void(0);" class="page_nothing">属性</a></li>
+                <li><a href="#" onclick="javascript:void(0);" rel="ng_page_global" class="ng_attr_tag">全局属性</a></li>
+                <li><a href="#" onclick="javascript:void(0);" rel="ng_page_attr" class="ng_attr_tag">页面属性</a></li>
             </ul>
         </div>
-        <div id="pl_right_container"></div>
+        <div id="pl_right_container">
+            <div class="ng_tag_ctl" id="ng_page_global" style="display: block;">
+
+            </div>
+            <div class="ng_tag_ctl" id="ng_page_attr" style="display: none;">
+
+            </div>
+        </div>
+    </div>
+    <div class="ng_hidden_op" style="display: none;">
+
     </div>
 </div>
 
@@ -130,6 +141,7 @@
             'account_api': '{{api_host}}/Account?act=user',
             'build_page_api':'{{api_host}}/workapp?act=pages',
             'build_page_info_api':'{{api_host}}/workapp?act=pageinfo',
+            'save_page_api':'{{api_host}}/workapp?act=savepage',
             'plugins_api':'{{api_host}}/plugins&act=lists',
         }).init();
     });

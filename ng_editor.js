@@ -19,6 +19,7 @@
             'account_api':'',
             'build_page_api':'',
             'build_page_info_api':'',
+            'save_page_api' : '',
             'plugins_api':'',
         },
         this.options = $.extend({}, this.defaults, opt);
@@ -108,7 +109,60 @@
             return uuid.join('');
         }
 
-        this.parser_layout = function (selector,layout_item,layout_style) {
+        this.attr_edit_global = function(attr) {
+            var attr_view = "";
+            attr_view = "<div id='attr_global' class='attr_box'>" ;
+
+            attr_view+= "<label for='attr_backgroundTextStyle'>页面文字样式</label><select id='attr_backgroundTextStyle'>" +
+                "<option value='dark'>dark</option>" +
+                "<option value='light'>light</option>" +
+                "</select>"+
+                "<hr/>";
+            ;
+            attr_view+= "<label for='attr_navigationBarBackgroundColor'>导航栏目背景颜色</label><input id='attr_navigationBarBackgroundColor' value='"+attr.navigationBarBackgroundColor+"'>" +
+                "<hr/>";
+            attr_view+= "<label for='attr_navigationBarTitleText'>导航栏目文字</label><input id='attr_navigationBarTitleText' value='"+attr.navigationBarTitleText+"'>" +
+                "<hr/>";
+            attr_view+= "<label for='attr_navigationBarTextStyle'>导航栏目文字样式</label><select id='attr_navigationBarTextStyle'>" +
+                "<option value='black'>black</option>" +
+                "<option value='white'>white</option>" +
+                "</select>"+
+                "<hr/>";
+            ;
+            attr_view+= '<textarea class="pre_data" style="display: none;" id="ng_page_window" name="post_s[window]">'+JSON.stringify(attr)+'</textarea>';
+            attr_view+= "<div><button  class='btn btn-info btn-apply'>应用</button></div>";
+            attr_view+= "</div>";
+            $('#ng_page_global').html(attr_view).css('display','block');
+
+            $('#attr_global').find('.btn-apply').click(function(){
+                var json_str = $('#ng_page_window').text();
+
+                var backgroundTextStyle = $('#attr_backgroundTextStyle').val();
+                var navigationBarBackgroundColor = $('#attr_navigationBarBackgroundColor').val();
+                var navigationBarTitleText = $('#attr_navigationBarTitleText').val();
+                var navigationBarTextStyle = $('#attr_navigationBarTextStyle').val();
+                console.log('btn-apply click');
+                console.log(json_str);
+
+                $('#pl_miniapp_header').css('background-color',navigationBarBackgroundColor);
+                $('#pl_miniapp_container .pl_miniapp_title').text(navigationBarTitleText).css('color',navigationBarTextStyle);
+
+                var json_obj = JSON.parse(json_str);
+                json_obj.backgroundTextStyle = backgroundTextStyle;
+                json_obj.navigationBarBackgroundColor = navigationBarBackgroundColor;
+                json_obj.navigationBarTitleText = navigationBarTitleText;
+                json_obj.navigationBarTextStyle = navigationBarTextStyle;
+
+                $('#ng_page_window').text(JSON.stringify(json_obj));
+
+                console.log(JSON.stringify(json_obj));
+                sessionStorage.setItem('ng_window',JSON.stringify(json_obj));
+
+            });
+
+        }
+
+        this.parser_layout = function (selector,layout_item,layout_style,parent) {
 
             if(typeof layout_item == 'object') {
                 var elem_name = layout_item.name;
@@ -133,27 +187,50 @@
 
                 }
 
+                var _layout_str = '';
                 if ('image' == elem_name) {
+                    var _image_box  =  '<img style="'+style+'" onerror=\'this.onerror="";this.src="/wxapp/asset/simpleboot/images/default_image.jpg"\' src="" id="'+elem_id+'" class="  ngedt_'+layout_item.class+'"/>';
 
-                    var _layout_str = '<img style="'+style+'" onerror=\'this.onerror="";this.src="/wxapp/asset/simpleboot/images/default_image.jpg"\' src="" id="'+elem_id+'" class="image_menu  ngedt_'+layout_item.class+'"/>';
+                    _layout_str = '<div class="layout_box image_menu" id="'+elem_id+'_box">';
+                    _layout_str+= _image_box;
 
+                    var key_post_name = '';
+                    if (parent) {
+                        var parent_array = parent.split('/');
+                        for(var p_i in parent_array) {
+                            key_post_name+= '['+parent_array[p_i]+']';
+                        }
+                    }
+                    key_post_name+='['+elem_id+']';
+                    _layout_str+= '<textarea class="pre_data" style="display: none;" id="'+elem_id+'_data" name="post_c'+key_post_name+'">'+JSON.stringify(layout_item)+'</textarea>';
+
+                    _layout_str+= '</div>';
+
+
+
+                    console.log($(_layout_str));
                     if (typeof selector == 'object') {
                         selector.append(_layout_str)
                     } else if (typeof selector == 'string') {
                         $(selector).append(_layout_str);
                     }
-                    var root_elem = $('#'+elem_id);
+                    var root_elem = $('#'+elem_id+'_box');
 
                     //$(root_elem).on( "contextmenu", function(){
                     //    alert(1);
                     //} );
                     if (typeof layout_item.subs == 'array') {
                         if (layout_item.subs.length>0) {
-
+                            var parent_array = [];
+                            if (parent) {
+                                var parent_array = parent.split('/');
+                            }
+                            parent_array.push(elem_id);
+                            var sub_parent = parent_array.join('/');
                             for(var loop_index in layout_item.subs) {
                                 var layout_item = layout_item.subs[loop_index];
                                 if (layout_item.type == 'base') {
-                                    ng_self.parser_layout(root_elem,layout_item);
+                                    ng_self.parser_layout(root_elem,layout_item,layout_style,sub_parent);
                                 }
 
                             }
@@ -165,13 +242,14 @@
         this.page_layout = function(root_elem,layout_data,layout_style) {
             //console.log(layout_data);
 
-
             if(typeof layout_data == 'object') {
+                var _layout_str = '<textarea class="pre_data" style="display: none;" id="ng_page_style" name="post_s[style]">'+JSON.stringify(layout_style)+'</textarea>';
+                $(root_elem).append(_layout_str);
 
                 for(var loop_index in layout_data.layout) {
                     var layout_item = layout_data.layout[loop_index];
                     if (layout_item.type == 'base') {
-                        ng_self.parser_layout($(root_elem),layout_item,layout_style);
+                        ng_self.parser_layout($(root_elem),layout_item,layout_style,'');
                     }
                 }
             }
@@ -244,6 +322,23 @@
                     $('#'+rel).find('.ng_page_snapshot a img').attr('src',dataUrl);
                     $(btn_self).text('保存');
                     ng_self.open_dialog(true,'保存成功！');
+
+                    var post_data = {}
+                    $('.pre_data').each(function(){
+                        var key_name = $(this).attr('name');
+                        var key_val = '';
+                        if ($(this)[0].tagName == 'INPUT') {
+                            key_val = $(this).val();
+                        } else if ($(this)[0].tagName == 'TEXTAREA') {
+                            key_val = $(this).text();
+                        }
+                        post_data[key_name] = key_val;
+                    });
+                    post_data = $.extend({}, ng_self.user_data, post_data);
+
+                    ng_self._load(ng_self.options.save_page_api,'post',post_data,function(flag,respone){
+                        console.log(respone);
+                    });
                 });
 
             });
@@ -311,18 +406,30 @@
                                     if(storage_data) {
                                         storage_data = JSON.parse(storage_data);
                                         console.log('from storage:'+rel);
-                                        var page_window = storage_data.window;
+
+                                        var storage_window_data_str = sessionStorage.getItem('ng_window');
+                                        console.log('----ng_window---');
+                                        console.log(storage_window_data_str);
+                                        console.log('----ng_window end---');
+                                        var storage_window_data = JSON.parse(storage_window_data_str);
+
+                                        var page_window = storage_window_data || storage_data.window;
+
                                         var page_show_title = page_window.navigationBarTitleText;
                                         $('#pl_miniapp_header').attr('rel',rel);
                                         $('#pl_miniapp_header').css('background-color',page_window.navigationBarBackgroundColor);
                                         $('#pl_miniapp_container .pl_miniapp_title').text(page_show_title).css('color',page_window.navigationBarTextStyle);
                                         ng_self.page_layout('#pl_miniapp_main',storage_data.page,storage_data.style);
+
+
+                                        ng_self.attr_edit_global(storage_window_data);
                                     } else {
                                         //然后再从
                                         ng_self._load(ng_self.options.build_page_info_api,'post',post_data,function(flag,respone){
                                             console.log('from network:'+rel);
                                             if(typeof respone.info == 'object') {
                                                 sessionStorage.setItem(rel,JSON.stringify(respone.info));
+                                                sessionStorage.setItem('ng_window',JSON.stringify(respone.info.window))
                                                 var page_window = respone.info.window;
                                                 var page_show_title = page_window.navigationBarTitleText;
                                                 $('#pl_miniapp_header').attr('rel',rel);
@@ -333,6 +440,7 @@
                                                     $('#pl_miniapp_container .pl_miniapp_title').text(default_page_title);
                                                 }
                                                 ng_self.page_layout('#pl_miniapp_main',respone.info.page,respone.info.style);
+                                                ng_self.attr_edit_global(respone.info.window);
                                             }
 
                                             //build the page
@@ -393,6 +501,30 @@
             }
         }
 
+        this.handle_attr_tag = function(index) {
+            $('a.ng_attr_tag').each(function(){
+                var a_obj = this;
+                $(a_obj).removeClass('ng_btn_active');
+                $(a_obj).click(function(){
+                    $('a.ng_attr_tag').each(function(){
+                        $(this).removeClass('ng_btn_active');
+                    });
+                    $('#pl_right_container .ng_tag_ctl').each(function(k,v){
+                        $(v).css({'display':'none'});
+                    });
+                    $(a_obj).addClass('ng_btn_active');
+                    var rel = $(a_obj).attr('rel');
+                    $('#'+rel).css({'display':'block'});
+
+                    var load_func = eval('ng_self.get_'+rel);
+                    if (typeof load_func == "function") {
+                        console.log('load:'+'ng_self.get_'+rel);
+                        load_func();
+                    }
+                });
+            });
+            $('a.ng_attr_tag').get(index).click();
+        }
         this.handle_tag = function(index) {
 
             $('a.ng_tag').each(function(){
@@ -485,6 +617,7 @@
                 $('#pl_mark').css('display','none');
             },1000);
 
+            this.handle_attr_tag(0);
             this.hire();
             return this;
         }
